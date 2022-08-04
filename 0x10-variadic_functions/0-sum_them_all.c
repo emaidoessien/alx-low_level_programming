@@ -6,7 +6,6 @@
  * @n: the first integer passed
  * Return: the sum of the variable
  */
-
 int sum_them_all(const unsigned int n, ...)
 {
 	unsigned int i;
@@ -17,6 +16,7 @@ int sum_them_all(const unsigned int n, ...)
 
 	for (i = 0; i < n; i++)
 		sum += va_arg(args, int);
+
 	va_end(args);
 
 	return (sum);

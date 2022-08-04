@@ -2,79 +2,60 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/**
- * _printchar - print char type element from va_list
- * @list: va_list passed to function
- */
-void _printchar(va_list list)
-{
-	printf("%c", va_arg(list, int));
-}
+void print_str(char *s);
 
 /**
- * _printstr - print string element from va_list
- * @list: va_list passed to function
- */
-void _printstr(va_list list)
-{
-	char *s;
-
-	s = va_arg(list, char *);
-	if (s == NULL)
-		s = "(nil)";
-	printf("%s", s);
-}
-
-/**
- * _printfloat - print float type element from va_list
- * @list: va_list passed to function
- */
-void _printfloat(va_list list)
-{
-	printf("%f", va_arg(list, double));
-}
-
-/**
- * _printint - print int type element from va_list
- * @list: va_list passed to function
- */
-void _printint(va_list list)
-{
-	printf("%d", va_arg(list, int));
-}
-
-/**
- * print_all - print anything passed if char, int, float, or string.
- * @format: string of formats to use and print
+ * print_all - prints anything.
+ * @format: list of types of arguments
  */
 void print_all(const char * const format, ...)
 {
-	unsigned int i, j;
+	unsigned int i = 0, hasprint = 0;
 	va_list args;
-	char *sep;
 
-	checker storage[] = {
-		{ "c", _printchar },
-		{ "f", _printfloat },
-		{ "s", _printstr },
-		{ "i", _printint }
-	};
-
-	i = 0;
-	sep = "";
 	va_start(args, format);
-	while (format != NULL && format[i / 4] != '\0')
+	while (format && format[i])
 	{
-		j = i % 4;
-		if (storage[j].type[0] == format[i / 4])
+		switch (format[i])
 		{
-			printf("%s", sep);
-			storage[j].f(args);
-			sep = ", ";
+			case 'i':
+				printf("%d", (int)va_arg(args, int));
+				hasprint = 1;
+				break;
+			case 'c':
+				printf("%c", (char)va_arg(args, int));
+				hasprint = 1;
+				break;
+			case 'f':
+				printf("%f", (float)va_arg(args, double));
+				hasprint = 1;
+				break;
+			case 's':
+				print_str((char *)va_arg(args, char *));
+				hasprint = 1;
+				break;
+			default:
+				hasprint = 0;
+				break;
 		}
 		i++;
+		if (format[i] && hasprint)
+			printf(", ");
 	}
 	printf("\n");
-
 	va_end(args);
+}
+
+/**
+ * print_str - prints a str
+ * @s: pointer to str
+ */
+void print_str(char *s)
+{
+	if (s)
+	{
+		printf("%s", s);
+		return;
+	}
+	printf("(nil)");
 }
